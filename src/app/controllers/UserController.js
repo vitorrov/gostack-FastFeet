@@ -50,7 +50,7 @@ class UserController {
       return res.status(400).json({ error: 'Validation failed' });
     }
 
-    const { email, oldPassword } = req.body;
+    const { email, oldPassword, password_hash, password } = req.body;
 
     const user = await User.findByPk(req.userId);
 
@@ -67,10 +67,14 @@ class UserController {
       return res.status(401).json({ error: 'Password does not match' });
     }
 
-    const { password_hash } = req.body;
-
     if (password_hash) {
       return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    if (password && !oldPassword) {
+      return res
+        .status(401)
+        .json({ error: 'You need to fill your old password' });
     }
 
     const { name } = await user.update(req.body);
