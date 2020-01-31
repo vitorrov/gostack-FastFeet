@@ -31,15 +31,14 @@ class DistributorController {
     const distributor = await Distributor.create(req.body);
 
     return res.json({
+      id: distributor.id,
       name: distributor.name,
       email: distributor.email,
     });
   }
 
   async update(req, res) {
-    const distributor = await Distributor.findOne({
-      where: { id: req.params.id },
-    });
+    const distributor = await Distributor.findByPk(req.params.id);
 
     const { name, email, avatar_id } = req.body;
 
@@ -66,9 +65,7 @@ class DistributorController {
   }
 
   async destroy(req, res) {
-    const distributor = await Distributor.findOne({
-      where: { id: req.params.id },
-    });
+    const distributor = await Distributor.findByPk(req.params.id);
 
     await distributor.destroy();
 
