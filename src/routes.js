@@ -23,7 +23,10 @@ routes.put('/users', UserController.update); // Atualizar usuario
 
 routes.post('/recipients', isAdmin, RecipientController.store); // Cadastra destinatário
 
-routes.post('/distributors', isAdmin, DistributorController.store);
+routes.post('/distributors', isAdmin, DistributorController.store); // Cadastra entregador
+routes.get('/distributors', isAdmin, DistributorController.index); // Listar todos entregadores
+routes.put('/distributors/:id', isAdmin, DistributorController.update); // Atualizar entregador
+routes.delete('/distributors/:id', isAdmin, DistributorController.destroy); // Remover entregador
 
 routes.get('/teste', isAdmin);
 
