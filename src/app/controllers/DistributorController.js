@@ -1,3 +1,4 @@
+import * as Yup from 'yup';
 import Distributor from '../models/Distributor';
 
 class DistributorController {
@@ -8,6 +9,17 @@ class DistributorController {
   }
 
   async store(req, res) {
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      email: Yup.string()
+        .email()
+        .required(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(400).json({ error: 'Validation failed' });
+    }
+
     const distributorExists = await Distributor.findOne({
       where: { email: req.body.email },
     });
