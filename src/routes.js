@@ -7,6 +7,7 @@ import SessionController from './app/controllers/SessionController';
 import RecipientController from './app/controllers/RecipientController';
 import FileController from './app/controllers/FileController';
 import DistributorController from './app/controllers/DistributorController';
+import OrderController from './app/controllers/OrderController';
 
 import authMiddleware from './app/middlewares/auth';
 import isAdmin from './app/middlewares/isAdmin';
@@ -27,6 +28,11 @@ routes.post('/distributors', isAdmin, DistributorController.store); // Cadastra 
 routes.get('/distributors', isAdmin, DistributorController.index); // Listar todos entregadores
 routes.put('/distributors/:id', isAdmin, DistributorController.update); // Atualizar entregador
 routes.delete('/distributors/:id', isAdmin, DistributorController.destroy); // Remover entregador
+
+routes.post('/orders', isAdmin, OrderController.store); // Cadastrar nova entrega
+routes.get('/orders', isAdmin, OrderController.index); // Lista todas entregas
+routes.put('/orders/:id', isAdmin, OrderController.update); // Atualizar dados entrega
+routes.delete('/orders/:id', isAdmin, OrderController.destroy); // Remover entrega
 
 routes.get('/teste', isAdmin);
 
