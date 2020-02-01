@@ -27,12 +27,12 @@ routes.post('/recipients', isAdmin, RecipientController.store); // Cadastra dest
 routes.post('/distributors', isAdmin, DistributorController.store); // Cadastra entregador
 routes.get('/distributors', isAdmin, DistributorController.index); // Listar todos entregadores
 routes.put('/distributors/:id', isAdmin, DistributorController.update); // Atualizar entregador
-routes.delete('/distributors/:id', isAdmin, DistributorController.destroy); // Remover entregador
+routes.delete('/distributors/:id', isAdmin, DistributorController.delete); // Remover entregador
 
 routes.post('/orders', isAdmin, OrderController.store); // Cadastrar nova entrega
 routes.get('/orders', isAdmin, OrderController.index); // Lista todas entregas
 routes.put('/orders/:id', isAdmin, OrderController.update); // Atualizar dados entrega
-routes.delete('/orders/:id', isAdmin, OrderController.destroy); // Remover entrega
+routes.delete('/orders/:id', isAdmin, OrderController.delete); // Remover entrega
 
 routes.get('/teste', isAdmin);
 
