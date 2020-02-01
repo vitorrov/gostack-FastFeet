@@ -41,6 +41,8 @@ routes.get(
 
 routes.delete(
   '/problem/:problemid/cancel-delivery',
+  authMiddleware,
+  isAdmin,
   DeliveryProblemController.delete
 ); // Rota para a distribuidora cancelar uma entrega baseado no ID do problema
 
