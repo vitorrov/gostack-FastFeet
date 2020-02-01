@@ -58,7 +58,7 @@ class OrderController {
   async delete(req, res) {
     const order = await Order.findByPk(req.params.id);
 
-    await order.delete();
+    await order.destroy();
 
     return res.json({
       success: `Order #${order.id} was deleted succesfully`,

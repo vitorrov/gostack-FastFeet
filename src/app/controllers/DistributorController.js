@@ -67,7 +67,7 @@ class DistributorController {
   async delete(req, res) {
     const distributor = await Distributor.findByPk(req.params.id);
 
-    await distributor.delete();
+    await distributor.destroy();
 
     return res.json({
       success: `Distributor ${distributor.name} was deleted succesfully`,
