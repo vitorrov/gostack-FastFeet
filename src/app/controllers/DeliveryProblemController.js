@@ -43,7 +43,7 @@ class DeliveryProblemController {
     await Mail.sendMail({
       to: `${distributor.name} <${distributor.email}>`,
       subject: 'Entrega cancelada',
-      text: `A entrega #${order.id} foi deletada, nos desculpe pelo transtorno!`,
+      text: `A entrega #${order.id} foi cancelada, nos desculpe pelo transtorno!`,
     });
 
     return res.json(order);
