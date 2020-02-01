@@ -1,5 +1,7 @@
 import * as Yup from 'yup';
 import Order from '../models/Order';
+import Mail from '../../lib/Mail';
+import Distributor from '../models/Distributor';
 
 class OrderController {
   async index(req, res) {
@@ -20,6 +22,13 @@ class OrderController {
     }
 
     const order = await Order.create(req.body);
+    const distributor = await Distributor.findByPk(order.distributor_id);
+
+    await Mail.sendMail({
+      to: `${distributor.name} <${distributor.email}>`,
+      subject: 'Nova entrega registrada para você!',
+      text: `A entrega #${order.id} está esperando sua retirada. O produto é ${order.product}`,
+    });
 
     return res.json(order);
   }
@@ -57,8 +66,15 @@ class OrderController {
 
   async delete(req, res) {
     const order = await Order.findByPk(req.params.id);
+    const distributor = await Distributor.findByPk(order.distributor_id);
 
     await order.destroy();
+
+    await Mail.sendMail({
+      to: `${distributor.name} <${distributor.email}>`,
+      subject: 'Entrega cancelada',
+      text: `A entrega #${order.id} foi deletada, nos desculpe pelo transtorno!`,
+    });
 
     return res.json({
       success: `Order #${order.id} was deleted succesfully`,
