@@ -67,6 +67,10 @@ class DistributorController {
   async delete(req, res) {
     const distributor = await Distributor.findByPk(req.params.id);
 
+    if (!distributor) {
+      return res.status(401).json({ error: 'Distributor not found' });
+    }
+
     await distributor.destroy();
 
     return res.json({

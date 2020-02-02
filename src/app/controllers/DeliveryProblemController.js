@@ -7,14 +7,34 @@ class DeliveryProblemController {
   async index(req, res) {
     const problems = await DeliveryProblem.findAll();
 
+    if (problems.length === 0) {
+      return res.json({ error: 'No problems found' });
+    }
+
     return res.json(problems);
   }
 
   async store(req, res) {
     const delivery_id = req.params.orderid;
+    const { description } = req.body;
+
+    const problemExists = await DeliveryProblem.findOne({
+      where: { delivery_id },
+    });
+
+    if (problemExists) {
+      return res.status(401).json({
+        error: 'Problem for this delivery has already been registered',
+      });
+    }
+
+    if (!description) {
+      return res.status(400).json({ error: 'Please, fill a description' });
+    }
+
     const problem = await DeliveryProblem.create({
       delivery_id,
-      description: req.body.description,
+      description,
     });
 
     return res.json(problem);
@@ -33,6 +53,10 @@ class DeliveryProblemController {
     const order = await Order.findByPk(problem.delivery_id);
     const distributor = await Distributor.findByPk(order.distributor_id);
 
+    if (order.canceled === true) {
+      return res.status(401).json({ error: 'Order has already been canceled' });
+    }
+
     if (order) {
       order.canceled_at = new Date();
       order.canceled = true;
@@ -42,7 +66,7 @@ class DeliveryProblemController {
 
     await Mail.sendMail({
       to: `${distributor.name} <${distributor.email}>`,
-      subject: 'Entrega cancelada',
+      subject: `Entrega #${order.id} cancelada`,
       text: `A entrega #${order.id} foi cancelada, nos desculpe pelo transtorno!`,
     });
 
