@@ -10,7 +10,7 @@ class NewdeliveryMail {
 
     await Mail.sendMail({
       to: `${distributor.name} <${distributor.email}>`,
-      subject: 'Nova entrega registrada para você!',
+      subject: 'FastFeet | Nova entrega registrada para você!',
       template: 'new',
       context: {
         distributor: distributor.name,

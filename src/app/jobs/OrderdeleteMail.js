@@ -10,7 +10,7 @@ class OrderdeleteMail {
 
     await Mail.sendMail({
       to: `${distributor.name} <${distributor.email}>`,
-      subject: `Entrega #${order.id} deletada`,
+      subject: `FastFeet | Entrega #${order.id} deletada`,
       template: 'deletion',
       context: {
         distributor: distributor.name,
