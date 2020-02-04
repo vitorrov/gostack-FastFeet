@@ -1,3 +1,5 @@
+import { Op } from 'sequelize';
+import { startOfDay, endOfDay } from 'date-fns';
 import Order from '../models/Order';
 
 class DeliveryController {
@@ -53,10 +55,39 @@ class DeliveryController {
       return res.status(401).json({ error: 'Please, fill a status' });
     }
 
+    // Se for antes que 8am e depois que 6pm não pode começar entrega
+
     // STATUS 1 = Começar entrega   STATUS 2 = Terminar entrega
 
-    if (status === 1) {
+    const { start_date } = req.query;
+
+    const searchDate = Number(start_date);
+
+    const dayDeliveries = await Order.findAll({
+      where: {
+        distributor_id: order.distributor_id,
+        start_date: {
+          [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
+        },
+      },
+    });
+
+    if (dayDeliveries.length >= 5) {
+      return res
+        .status(401)
+        .json({ error: 'You can only do five deliveries a day' });
+    }
+
+    const current_hour = new Date().getHours();
+    const start_hour = 8;
+    const end_hour = 23;
+
+    if (status === 1 && current_hour > start_hour && current_hour < end_hour) {
       order.start_date = new Date();
+    } else {
+      return res
+        .status(401)
+        .json({ error: 'You can only start a delivery between 8am and 18pm' });
     }
 
     if (status === 2) {
