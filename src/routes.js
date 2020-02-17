@@ -10,6 +10,7 @@ import DistributorController from './app/controllers/DistributorController';
 import OrderController from './app/controllers/OrderController';
 import DeliveryController from './app/controllers/DeliveryController';
 import DeliveryProblemController from './app/controllers/DeliveryProblemController';
+import DeliveredController from './app/controllers/DeliveredController';
 
 import authMiddleware from './app/middlewares/auth';
 import isAdmin from './app/middlewares/isAdmin';
@@ -23,7 +24,12 @@ routes.post('/sessions', SessionController.store); // Login
 
 routes.get('/deliveryman/:id/pendent', isDistributor, DeliveryController.index); // Mostra todas entregas que ainda devem ser feitas pelo entregador do ID solicitado
 routes.get('/deliveryman/:id/done', isDistributor, DeliveryController.show); // Mostra as entregas já realizadas pelo ID do entregador
-routes.put('/deliveryman/:orderid', DeliveryController.update); // Atualizar status da entrega
+routes.put('/deliveryman/:orderid', DeliveryController.update); // Começar entrega
+routes.put(
+  '/finishdelivery/:orderid',
+  upload.single('file'),
+  DeliveredController.update
+);
 
 routes.post(
   '/delivery/:orderid/problemregister',
@@ -62,7 +68,7 @@ routes.get('/orders', isAdmin, OrderController.index); // Lista todas entregas
 routes.put('/orders/:id', isAdmin, OrderController.update); // Atualizar dados entrega
 routes.delete('/orders/:id', isAdmin, OrderController.delete); // Remover entrega
 
-routes.get('/teste/:id', isDistributor);
+routes.put('/teste/:orderid', isDistributor);
 
 routes.post('/files', upload.single('file'), FileController.store);
 

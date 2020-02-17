@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { startOfDay, endOfDay } from 'date-fns';
+import { startOfDay, endOfDay, parseISO } from 'date-fns';
 import Order from '../models/Order';
 
 class DeliveryController {
@@ -31,37 +31,23 @@ class DeliveryController {
   }
 
   async update(req, res) {
-    const { status } = req.body;
-
     const order = await Order.findByPk(req.params.orderid);
 
     if (!order) {
       return res.json({ error: 'Order not found, check if the id is correct' });
     }
 
-    if (status === 1 && order.start_date !== null) {
+    if (order.start_date !== null) {
       return res
         .status(401)
         .json({ error: 'Delivery progress already started for this order' });
     }
 
-    if (status === 2 && order.done === true) {
-      return res
-        .status(401)
-        .json({ error: 'Delivery progress already finished for this order' });
-    }
-
-    if (!status) {
-      return res.status(401).json({ error: 'Please, fill a status' });
-    }
-
     // Se for antes que 8am e depois que 6pm não pode começar entrega
 
-    // STATUS 1 = Começar entrega   STATUS 2 = Terminar entrega
+    const { start_date } = req.body;
 
-    const { start_date } = req.query;
-
-    const searchDate = Number(start_date);
+    const searchDate = parseISO(start_date);
 
     const dayDeliveries = await Order.findAll({
       where: {
@@ -79,10 +65,8 @@ class DeliveryController {
     }
 
     const current_hour = new Date().getHours();
-    const start_hour = 8;
-    const end_hour = 18;
 
-    if (status === 1 && current_hour > start_hour && current_hour < end_hour) {
+    if (current_hour < 8 || current_hour > 18) {
       order.start_date = new Date();
     } else {
       return res
@@ -90,12 +74,9 @@ class DeliveryController {
         .json({ error: 'You can only start a delivery between 8am and 18pm' });
     }
 
-    if (status === 2) {
-      order.end_date = new Date();
-      order.done = true;
-    }
-
-    await order.save();
+    await order.update({
+      start_date: new Date(),
+    });
 
     return res.json(order);
   }
