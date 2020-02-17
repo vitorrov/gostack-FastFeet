@@ -80,7 +80,7 @@ class DeliveryController {
 
     const current_hour = new Date().getHours();
     const start_hour = 8;
-    const end_hour = 23;
+    const end_hour = 18;
 
     if (status === 1 && current_hour > start_hour && current_hour < end_hour) {
       order.start_date = new Date();
